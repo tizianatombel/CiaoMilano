@@ -128,7 +128,7 @@ input:focus-visible,textarea:focus-visible{outline:3px solid var(--ac);outline-o
 const $=s=>document.querySelector(s),D=Object.create(null),R=Object.create(null);
 let st={days:{},best:{}},view='home',Q=[],qi=0,sc=0,wr=[],mode,ui=0,last=0,sv=0,td='auto';
 try{Object.assign(st,JSON.parse(localStorage.getItem('ciaoit')||'{}'))}catch(e){}
-const save=()=>{try{localStorage.setItem('ciaoit',JSON.stringify(st))}catch(e){}};
+const save=()=>{try{localStorage.setItem('ciaoit',JSON.stringify(st))}catch(e){}if(typeof syncPush=='function')syncPush()};
 "ciao=hola / chau;buongiorno=buen día;buonasera=buenas tardes;buonanotte=buenas noches (al dormir);arrivederci=hasta luego;grazie=gracias;prego=de nada;scusa=perdón;per favore=por favor;piacere=mucho gusto;bene=bien;male=mal;sì=sí;no=no;e=y;io=yo;tu=vos / tú;lui=él;lei=ella;noi=nosotros;voi=ustedes;loro=ellos;sono=soy / son;sei=sos / seis;è=es / está;siamo=somos;siete=son;essere=ser / estar;avere=tener;ho=tengo;hai=tenés;ha=tiene;abbiamo=tenemos;fare=hacer;faccio=hago;mangiare=comer;mangio=como;mangia=come;chiamo=llamo;chiami=llamás;chiama=llama;chiamarsi=llamarse;mi=me;ti=te;fame=hambre;non=no;come=cómo / como;cosa=qué;significa=significa;dice=dice;scrivi=escribí;scegli=elegí;completa=completá;frase=oración;risposta=respuesta;giusta=correcta;stai=estás;oggi=hoy;domani=mañana;ieri=ayer;dopo=después;più=más;fa=hace / da;dove=dónde;chi=quién;molto=mucho;anche=también;mio=mi;mia=mi;miei=mis;tuo=tu;viene=viene;mese=mes;anno=año;giorno=día;settimana=semana;primo=primero;prima=prima;quando=cuando;sera=noche;uno=1;due=2;tre=3;quattro=4;cinque=5;sette=7;otto=8;nove=9;dieci=10;undici=11;dodici=12;tredici=13;quattordici=14;quindici=15;sedici=16;diciassette=17;diciotto=18;diciannove=19;venti=20;ventuno=21;ventidue=22;venticinque=25;trenta=30;italia=Italia;spagna=España;francia=Francia;germania=Alemania;brasile=Brasil;milano=Milán;roma=Roma;argentina=Argentina / argentina;argentino=argentino;italiano=italiano;italiana=italiana;spagnolo=español;spagnoli=españoles;francese=francés;tedesco=alemán;tedeschi=alemanes;brasiliano=brasileño;paese=país;lunedì=lunes;martedì=martes;mercoledì=miércoles;giovedì=jueves;venerdì=viernes;sabato=sábado;domenica=domingo;gennaio=enero;febbraio=febrero;marzo=marzo;aprile=abril;maggio=mayo;giugno=junio;luglio=julio;agosto=agosto;settembre=septiembre;ottobre=octubre;novembre=noviembre;dicembre=diciembre;weekend=fin de semana;famiglia=familia;madre=madre;mamma=mamá;padre=padre;papà=papá;fratello=hermano;sorella=hermana;nonno=abuelo;nonna=abuela;figlio=hijo;figlia=hija;zio=tío;zia=tía;cugino=primo;cugina=prima;genitori=padres;marito=esposo;moglie=esposa;parlare=hablar;studiare=estudiar;scrivere=escribir;leggere=leer;dormire=dormir;vivere=vivir;finire=terminar;messaggio=mensaje;libro=libro;studente=estudiante (m.);studentessa=estudiante (f.);studenti=estudiantes;università=universidad;esame=examen;lezione=clase;quaderno=cuaderno;zaino=mochila;appunti=apuntes;biblioteca=biblioteca;tram=tranvía;duomo=catedral (el Duomo de Milán);navigli=canales de Milán;aperitivo=aperitivo;caffè=café;cornetto=medialuna;pizza=pizza;pesce=pescado;acqua=agua;casa=casa;amico=amigo;amica=amiga;città=ciudad;moda=moda;bello=lindo;felice=feliz;stanco=cansado;buono=rico / bueno;burro=manteca (¡falso amigo!);caldo=calor / caliente (¡falso amigo!);camera=habitación (¡falso amigo!);largo=ancho (¡falso amigo!)".split(';').forEach(p=>{const i=p.indexOf('=');D[p.slice(0,i)]=p.slice(i+1)});
 const strip=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,''),norm=s=>s.toLowerCase().replace(/’/g,"'");
 Object.keys(D).forEach(k=>D[k].split(' / ').forEach(v=>{v=v.replace(/\s*\(.*?\)/g,'').toLowerCase();if(!R[v])R[v]=k;const s=strip(v);if(!R[s])R[s]=k}));
@@ -202,14 +202,14 @@ const NAV=[
 ];
 $('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" onclick="go('${n[0]}')">${n[1]}<span>${n[2]}</span></button>`).join('');
 const go=v=>{view=v;scrollTo(0,0);render()};
-function render(){$('#hd').style.display=view=='quiz'?'none':'flex';$('#hd').innerHTML=`<div class="logo">${marcelo('frente',36)}<span>Ciao, <mark>Milano!</mark></span></div><div class="hs" role="img" aria-label="Racha de ${streak()} días. Meta diaria: ${Math.min(10,Math.floor(day().s/60))} de 10 minutos"><span class="rw"><svg class="rg" viewBox="0 0 36 36" aria-hidden="true"><circle class="rt" cx="18" cy="18" r="16"/><circle id="rgc" class="rf" cx="18" cy="18" r="16" style="stroke-dasharray:100.53;stroke-dashoffset:${100.53*(1-Math.min(1,day().s/600))}"/></svg><span class="ic" style="background:var(--pink)">${IC.fl}</span></span>${streak()}</div>`;$('#nav').style.display=view=='quiz'?'none':'flex';$('#m').innerHTML=({home:Home,lez:Lez,tr:Tr,lib:Lib,quiz:Quiz,cs:Sheet})[view]();[...$("#m").children].forEach((e,i)=>e.style.setProperty("--i",Math.min(i,8)));const pb=$(".bar i");if(pb)requestAnimationFrame(()=>requestAnimationFrame(()=>pb.style.width=pb.dataset.w+"%"));document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==view));const i=$('#ai');if(i)i.focus();if(view=='tr')doTr();refreshTg();if(view=='lez'&&curU()>0){const c=$('#cur');if(c)c.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'})}}
+function render(){$('#hd').style.display=(view=='quiz'||view=='wel')?'none':'flex';$('#hd').innerHTML=`<div class="logo">${marcelo('frente',36)}<span>Ciao, <mark>Milano!</mark></span></div><div class="hs" role="img" aria-label="Racha de ${streak()} días. Meta diaria: ${Math.min(10,Math.floor(day().s/60))} de 10 minutos"><span class="rw"><svg class="rg" viewBox="0 0 36 36" aria-hidden="true"><circle class="rt" cx="18" cy="18" r="16"/><circle id="rgc" class="rf" cx="18" cy="18" r="16" style="stroke-dasharray:100.53;stroke-dashoffset:${100.53*(1-Math.min(1,day().s/600))}"/></svg><span class="ic" style="background:var(--pink)">${IC.fl}</span></span>${streak()}</div>`;$('#nav').style.display=(view=='quiz'||view=='wel')?'none':'flex';$('#m').innerHTML=({home:Home,lez:Lez,tr:Tr,lib:Lib,quiz:Quiz,cs:Sheet,wel:Welcome})[view]();[...$("#m").children].forEach((e,i)=>e.style.setProperty("--i",Math.min(i,8)));const pb=$(".bar i");if(pb)requestAnimationFrame(()=>requestAnimationFrame(()=>pb.style.width=pb.dataset.w+"%"));document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==view));const i=$('#ai');if(i)i.focus();if(view=='tr')doTr();refreshTg();if(view=='lez'&&curU()>0){const c=$('#cur');if(c)c.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'})}}
 const greet=()=>{const h=+new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:'America/Argentina/Buenos_Aires'}).format(new Date());return h>=6&&h<12?'Buongiorno':h>=12&&h<18?'Buon pomeriggio':h>=18&&h<22?'Buonasera':'Buonanotte'};
 setInterval(()=>{const e=$('#gr');if(e)e.textContent=greet()},60000);
 const ic=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#550218" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`,IC={ck:ic('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>'),fl:ic('<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>'),cl:ic('<circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/>')};
 function Home(){const t=new Date(),h=t.getHours(),dow=(t.getDay()+6)%7,mon=new Date(t);mon.setDate(t.getDate()-dow);
  const g=greet(),wk=['lun','mar','mer','gio','ven','sab','dom'].map((n,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return `<div class="chip ${i==dow?'today':dayOk(key(d))?'done':''}"><b>${d.getDate()}</b>${n}</div>`}).join('');
  const s=day().s,ix=curU(),ws=[0,1,2].map(j=>WD[(t.getDate()+j)%WD.length]),pr=Math.round(us(U[ix].id).a.filter(Boolean).length/3*100);
- return `<section class="hero"><div class="hero-txt"><div class="top-label">Italiano · Principiante</div><h1><span id="gr">${g}</span>, Tizi!</h1><p><mark>Progreso real</mark><br>con Marcelo.</p></div><div class="arch-img">${marcelo('saluda',126)}</div></section>
+ return `<section class="hero"><div class="hero-txt"><div class="top-label">Italiano · Principiante</div><h1><span id="gr">${g}</span>${st.nick?', '+esc(st.nick):''}!</h1><p><mark>Progreso real</mark><br>con Marcelo.</p></div><div class="arch-img">${marcelo('saluda',126)}</div></section>
  <div class="card lb"><span class="tag">En progreso</span><div class="row2"><h3>Unidad ${ix+1}: ${U[ix].t}</h3><b>${pr}%</b></div><div class="meter"><i style="width:${Math.max(4,pr)}%"></i></div><button class="go full" onclick="go('lez')">Continuar lección</button></div>
  <hr class="div">
  <h3 style="margin:0 0 12px">Tu racha</h3><div class="week">${wk}</div>
@@ -263,7 +263,7 @@ function Lib(){const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate
  return `<div class="ph"><div><h2>Perfil</h2><p class="sub">Tu progreso y calificaciones.</p></div>${marcelo('cool',96)}</div>
  <h3 style="margin-top:24px; margin-bottom:12px;">Tu racha</h3><div class="card y streak" style="margin:0;"><div class="bn">${streak()}</div><div><b style="font-size:1.2rem;">Días seguidos</b><p style="line-height:1.2; margin-top:4px;"><small>Estudia 2 min o responde 3 veces para mantenerla.</small></p></div></div><div class="stats2"><div class="card"><small>Tiempo Total</small><b class="n">${Math.round(all.reduce((a,x)=>a+x.s,0)/60)}<span style="font-size:1.2rem">m</span></b></div><div class="card o"><small>Respuestas</small><b class="n">${all.reduce((a,x)=>a+x.n,0)}</b></div></div>
  <h3 style="margin-top:24px; margin-bottom:12px;">Últimos 7 días</h3><div class="card" style="margin:0;"><div class="cols">${days.map(([d,x])=>`<div class="col"><b>${Math.round(x.s/60)}′</b><i style="height:${Math.max(4, (x.s/mx)*100)}%"></i><small style="margin-top:6px;">${['D','L','M','M','J','V','S'][d.getDay()]}</small></div>`).join('')}</div></div>
- <h3 style="margin-top:24px; margin-bottom:12px;">Calificaciones (sobre 30)</h3><div class="card" style="margin-top:0;">${U.map(u=>`<div class="row"><span>${u.id}.${u.t}</span><b style="font-size:1.1rem;">${us(u.id).e!=null?us(u.id).e+'/30':'—'}</b></div>`).join('')}</div>${Saved()}`}
+ <h3 style="margin-top:24px; margin-bottom:12px;">Calificaciones (sobre 30)</h3><div class="card" style="margin-top:0;">${U.map(u=>`<div class="row"><span>${u.id}.${u.t}</span><b style="font-size:1.1rem;">${us(u.id).e!=null?us(u.id).e+'/30':'—'}</b></div>`).join('')}</div>${SyncCard()}${Saved()}`}
 
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let curDir='ites',curOut='',ht,tt,pinned=false;
@@ -294,7 +294,114 @@ function copyT(){const t=curOut,ok=()=>toast('Traducción copiada','feliz'),fbk=
 function addH(v){v=v.trim();if(v.length<2)return;st.hist=[v,...(st.hist||[]).filter(x=>x!=v)].slice(0,8);save();showHist()}
 function showHist(){const e=$('#hist');if(e)e.innerHTML=(st.hist||[]).map((h,i)=>`<button type="button" class="chip2 hb" onclick="useH(${i})">${esc(h)}</button>`).join('')||'<small>Aquí aparecerán tus últimas búsquedas.</small>'}
 function useH(i){$('#ti').value=st.hist[i];doTr()}
+/* ===== CUENTA POR USUARIO + SINCRONIZACIÓN (Supabase) =====
+   Pegá acá tus 2 datos de Supabase (ver supabase.sql).
+   Si los dejás vacíos, la app funciona solo en este dispositivo (con apodo). */
+const SYNC={url:'https://tpjcamikkdjexmvwbeht.supabase.co',key:'sb_publishable_WmdJO0Yz-tmCnjubBtVmSA_Boarf2x0'};
+const SK='ciaoit-sync';
+let sync={user:'',at:0,err:'',busy:false,skip:0},syncT=0,wm='new',wb=false;
+try{const s=JSON.parse(localStorage.getItem(SK)||'{}');sync.user=s.user||'';sync.at=s.at||0;sync.skip=s.skip||0}catch(e){}
+const syncOn=()=>!!(SYNC.url&&SYNC.key);
+const syncSave=()=>{try{localStorage.setItem(SK,JSON.stringify({user:sync.user,at:sync.at,skip:sync.skip}))}catch(e){}};
+const localSave=()=>{try{localStorage.setItem('ciaoit',JSON.stringify(st))}catch(e){}};
+const normUser=u=>String(u).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const userOk=u=>/^[a-z0-9._-]{10,40}$/.test(u);
+const cleanNick=n=>String(n).replace(/\s+/g,' ').trim().slice(0,20);
+const needWel=()=>!st.nick&&!sync.user&&!sync.skip;
+const USER_HINT='Usá 10 a 40 caracteres: letras, números, punto, guion o guion bajo (sin espacios). Ej: marcelo-italiano-2026';
+async function sid(u){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(normUser(u)),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode('ciaomilano-v1'),iterations:150000},k,256);return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function rpc(fn,body){const r=await fetch(SYNC.url.replace(/\/$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SYNC.key,'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error('HTTP '+r.status);const t=await r.text();return t?JSON.parse(t):null}
+const mx=(a,b)=>a==null?b:b==null?a:Math.max(a,b);
+function mergeSt(L,R){R=R||{};const o={...R,...L},ks=(a,b)=>new Set([...Object.keys(a||{}),...Object.keys(b||{})]);
+ o.days={};ks(L.days,R.days).forEach(k=>{const a=(L.days||{})[k]||{},b=(R.days||{})[k]||{};o.days[k]={s:mx(a.s,b.s)||0,n:mx(a.n,b.n)||0}});
+ o.u={};ks(L.u,R.u).forEach(k=>{const a=(L.u||{})[k]||{},b=(R.u||{})[k]||{},x=a.a||[0,0,0],y=b.a||[0,0,0];o.u[k]={a:[0,1,2].map(i=>(x[i]||y[i])?1:0),e:mx(a.e,b.e)??null,r:mx(a.r,b.r)??null}});
+ o.best={};ks(L.best,R.best).forEach(k=>{const a=(L.best||{})[k],b=(R.best||{})[k];o.best[k]=(typeof a=='number'||typeof b=='number')?mx(a,b):(a??b)});
+ o.goal=[L.goal,R.goal].filter(Boolean).sort().pop();if(!o.goal)delete o.goal;
+ o.nick=L.nick||R.nick||'';
+ const seen=new Set();o.words=[...(L.words||[]),...(R.words||[])].filter(w=>{const k=String(w[0]).toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
+ o.hist=[...new Set([...(L.hist||[]),...(R.hist||[])])].slice(0,8);return o}
+async function syncNow(quiet){
+ if(!syncOn()||!sync.user||sync.busy)return;
+ sync.busy=true;sync.err='';
+ try{
+  const id=await sid(sync.user),rm=await rpc('get_progreso',{p_id:id}),m=mergeSt(st,rm),changed=JSON.stringify(m)!==JSON.stringify(st);
+  st=m;localSave();
+  await rpc('save_progreso',{p_id:id,p_data:st});
+  sync.at=Date.now();syncSave();
+  if(changed&&['home','lez','lib'].includes(view))render();
+  if(!quiet)toast('Progreso sincronizado','feliz');
+ }catch(e){sync.err='No se pudo sincronizar. Revisá tu conexión.';if(!quiet)toast(sync.err,'postura')}
+ finally{sync.busy=false;refreshSync()}
+}
+function syncPush(){if(!syncOn()||!sync.user||syncT)return;syncT=setTimeout(()=>{syncT=0;syncNow(true)},15000)}
+/* ---- pantalla de bienvenida / registro ---- */
+function wErr(m){const e=$('#we');if(e)e.textContent=m||'';wBusy(false)}
+function wBusy(b){wb=b;document.querySelectorAll('#wf button.go').forEach(x=>x.disabled=b)}
+function setWm(m){const u=($('#wu')||{}).value||'',n=($('#wn')||{}).value||'';wm=m;render();if($('#wu'))$('#wu').value=u;if($('#wn'))$('#wn').value=n}
+function wDone(msg){view='home';scrollTo(0,0);render();toast(msg,'saluda')}
+function wLocal(){
+ const n=cleanNick(($('#wn')||{}).value||'');
+ if(!n)return wErr('Elegí un apodo para que Marcelo te salude.');
+ st.nick=n;localSave();wDone('Benvenuto, '+n+'!')
+}
+async function wCreate(){
+ if(wb)return;
+ const u=normUser(($('#wu')||{}).value||''),n=cleanNick(($('#wn')||{}).value||'');
+ if(!userOk(u))return wErr(USER_HINT);
+ if(!n)return wErr('Elegí un apodo para que Marcelo te salude.');
+ wErr('');wBusy(true);
+ try{
+  const ex=await rpc('get_progreso',{p_id:await sid(u)});
+  if(ex!=null)return wErr('Ese usuario ya existe. Elegí otro más personal, o tocá «Ya tengo usuario» si es tuyo.');
+  st.nick=n;sync.user=u;sync.at=0;sync.skip=0;syncSave();localSave();
+  await syncNow(true);wBusy(false);wDone('Benvenuto, '+n+'!')
+ }catch(e){wErr('No se pudo conectar. Revisá tu conexión e intentá de nuevo.')}
+}
+async function wLogin(){
+ if(wb)return;
+ const u=normUser(($('#wu')||{}).value||'');
+ if(!userOk(u))return wErr('Ese usuario no es válido. '+USER_HINT);
+ wErr('');wBusy(true);
+ try{
+  const rm=await rpc('get_progreso',{p_id:await sid(u)});
+  if(rm==null)return wErr('No encontré ese usuario. Revisá cómo lo escribiste o creá uno nuevo.');
+  sync.user=u;sync.at=0;sync.skip=0;syncSave();
+  await syncNow(true);wBusy(false);wDone('Bentornato'+(st.nick?', '+st.nick:'')+'!')
+ }catch(e){wErr('No se pudo conectar. Revisá tu conexión e intentá de nuevo.')}
+}
+function wSkip(){sync.skip=1;syncSave();view='home';scrollTo(0,0);render()}
+function Welcome(){
+ const on=syncOn(),inp=(id,lab,ph,ex)=>`<label for="${id}" style="display:block;font-weight:700;margin:14px 0 6px">${lab}</label><input id="${id}" placeholder="${ph}" autocomplete="off" autocapitalize="none" spellcheck="false"${ex||''}>`;
+ let f;
+ if(!on)f=inp('wn','¿Cómo querés que te llame Marcelo?','Tu apodo',' maxlength="20" onkeydown="if(event.key==\'Enter\')wLocal()"')+`<button class="go full" type="button" onclick="wLocal()">Empezar</button>`;
+ else if(wm=='new')f=inp('wu','Tu usuario','marcelo-italiano-2026',' maxlength="40"')+`<small style="display:block;margin-top:6px">${USER_HINT}</small>`+inp('wn','Tu apodo','Ej: Tizi',' maxlength="20"')+`<small style="display:block;margin-top:6px">Así te va a saludar Marcelo: «${esc(greet())}, <b>${esc(($('#wn')||{}).value||'Tizi')}</b>!»</small><button class="go full" type="button" onclick="wCreate()">Crear usuario</button>`;
+ else f=inp('wu','Tu usuario','marcelo-italiano-2026',' maxlength="40" onkeydown="if(event.key==\'Enter\')wLogin()"')+`<button class="go full" type="button" onclick="wLogin()">Ingresar</button>`;
+ return `<div style="display:grid;place-items:center;margin-top:8px">${marcelo('saluda',130)}</div><h2 style="text-align:center;margin-top:8px">¡Ciao! Soy Marcelo</h2><p class="sub" style="text-align:center">${on?'Creá tu usuario para guardar tu progreso y seguir desde cualquier dispositivo.':'Antes de empezar, contame cómo te llamás.'}</p>`
+ +(on?`<div class="seg" role="group" aria-label="Tipo de acceso"><button type="button" class="${wm=='new'?'on':''}" aria-pressed="${wm=='new'}" onclick="setWm('new')">Soy nuevo</button><button type="button" class="${wm=='in'?'on':''}" aria-pressed="${wm=='in'}" onclick="setWm('in')">Ya tengo usuario</button></div>`:'')
+ +`<div class="card" id="wf" style="margin-top:0">${f}<p id="we" role="alert" aria-live="polite" style="margin:12px 0 0;color:var(--ac);font-weight:700"></p></div><p style="text-align:center"><button type="button" onclick="wSkip()" style="background:none;border:0;color:var(--ink);text-decoration:underline;font-weight:700;padding:10px">${st.nick||sync.user?'Ahora no':'Seguir sin usuario (solo en este dispositivo)'}</button></p>`}
+/* ---- tarjeta del Perfil ---- */
+function syncNick(){const n=cleanNick(($('#nk')||{}).value||'');if(!n){toast('El apodo no puede estar vacío','postura');return}st.nick=n;save();toast('Apodo guardado: '+n,'feliz');syncPush()}
+async function syncOff(){
+ if(!sync.user)return;
+ if(!confirm('¿Cerrar sesión? Se borra el progreso de ESTE dispositivo (queda guardado en tu usuario y lo recuperás al ingresar).'))return;
+ await syncNow(true);
+ if(sync.err&&!confirm('No se pudo guardar lo último en la nube; si cerrás sesión ahora se pierde. ¿Cerrar igual?'))return;
+ st={days:{},best:{},u:{}};try{localStorage.removeItem('ciaoit')}catch(e){}
+ sync.user='';sync.at=0;sync.skip=0;syncSave();view='wel';wm='in';scrollTo(0,0);render()
+}
+function syncOpen(){sync.skip=0;wm='in';go('wel')}
+const syncTxt=()=>sync.err||(sync.at?'Última sincronización: '+new Date(sync.at).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}):'Todavía sin sincronizar');
+function SyncInner(){
+ const nick=`<label for="nk" style="display:block;font-weight:700;margin-bottom:6px">Tu apodo</label><input id="nk" value="${esc(st.nick||'')}" maxlength="20" autocomplete="off" placeholder="Ej: Tizi"><div class="btns"><button type="button" onclick="syncNick()">Guardar apodo</button></div>`;
+ if(!syncOn())return nick;
+ if(!sync.user)return nick+`<hr class="div"><p><b>Guardá tu progreso en la nube</b></p><p><small>Creá un usuario y usá tu progreso en el celu, la compu y la tablet.</small></p><div class="btns"><button type="button" onclick="syncOpen()">Crear usuario o ingresar</button></div>`;
+ return nick+`<hr class="div"><small>Usuario</small><p style="margin:4px 0 6px"><b style="font-family:ui-monospace,monospace;font-size:1.1rem;word-break:break-all">${esc(sync.user)}</b></p><p><small>${esc(syncTxt())}</small></p><p style="margin-top:8px"><small>Tu usuario es tu llave: quien lo conozca puede ver y modificar tu progreso. Para entrar en otro dispositivo, elegí «Ya tengo usuario» y escribilo.</small></p><div class="btns"><button type="button" onclick="syncNow()">Sincronizar ahora</button><button type="button" onclick="syncOff()">Cerrar sesión</button></div>`}
+const SyncCard=()=>`<h3 style="margin-top:24px;margin-bottom:12px">Tu cuenta</h3><div class="card" id="sync" style="margin-top:0">${SyncInner()}</div>`;
+function refreshSync(){const e=$('#sync');if(e&&!document.activeElement?.matches?.('#nk'))e.innerHTML=SyncInner()}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sync.user&&Date.now()-sync.at>30000)syncNow(true)});
+if(needWel())view='wel';
 render();
+syncNow(true);
 </script>
 </body>
 </html>
